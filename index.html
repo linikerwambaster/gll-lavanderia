@@ -16,7 +16,7 @@
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Unbounded:wght@500;700;800;900&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/site.css?v=1">
 </head>
 <body>
@@ -42,13 +42,24 @@
 <main>
 <!-- ============ ABERTURA ============ -->
 <section class="abertura" id="inicio">
-  <div class="agua" aria-hidden="true"><i></i><i></i><i></i></div>
+  <video class="abertura-video" id="videoAbertura" autoplay muted loop playsinline preload="auto"
+    poster="assets/video/hero_16x9.jpg"
+    data-pc="assets/video/hero_16x9.mp4" data-pc-poster="assets/video/hero_16x9.jpg"
+    data-cel="assets/video/hero_9x16.mp4" data-cel-poster="assets/video/hero_9x16.jpg" aria-hidden="true"></video>
+  <div class="abertura-veu" aria-hidden="true"></div>
   <div class="bolhas" data-bolhas="34" aria-hidden="true"></div>
 
-  <div class="abertura-grade">
-    <div class="abertura-texto">
-      <p class="selo-topo"><span class="pingo"></span>Lavanderia especializada em tênis · São Paulo</p>
-      <h1>Tênis limpo é<br><span class="destaque">outro nível.</span></h1>
+  <div class="moldura" aria-hidden="true">
+    <span class="canto c1">EST. 2026</span>
+    <span class="canto c2">SÃO PAULO · SP</span>
+    <span class="canto c3">+500 PARES ENTREGUES</span>
+    <span class="canto c4">LAVAGEM À MÃO</span>
+  </div>
+
+  <div class="abertura-conteudo">
+    <p class="selo-topo"><span class="pingo"></span>Lavanderia especializada em tênis</p>
+    <h1><span class="linha">Tênis limpo</span><span class="linha">é <span class="destaque">outro nível.</span></span></h1>
+    <div class="abertura-base">
       <p class="lead">A gente busca o seu tênis em casa, lava à mão, detalhe por detalhe, e devolve higienizado e pronto pra usar.</p>
       <div class="acoes">
         <a class="btn btn-zap" data-zap="orcamento" href="#" target="_blank" rel="noopener">
@@ -57,43 +68,10 @@
         </a>
         <a class="btn btn-linha" href="#antes-depois">Ver antes e depois</a>
       </div>
-      <ul class="numeros">
-        <li><b>+500</b><span>pares entregues</span></li>
-        <li><b>Busca</b><span>e entrega na sua casa</span></li>
-        <li><b>À mão</b><span>do cadarço ao solado</span></li>
-      </ul>
-    </div>
-
-    <!-- A máquina: o vídeo dos tênis reais roda dentro da porta -->
-    <div class="maquina-area">
-      <div class="maquina" id="maquina">
-        <div class="painel">
-          <svg class="painel-coroa" viewBox="0 0 64 40" aria-hidden="true"><path d="M4 34 L8 10 L20 22 L32 4 L44 22 L56 10 L60 34 Z" fill="currentColor"/><circle cx="8" cy="8" r="3.4" fill="currentColor"/><circle cx="32" cy="3" r="3.4" fill="currentColor"/><circle cx="56" cy="8" r="3.4" fill="currentColor"/></svg>
-          <div class="visor" aria-live="polite">
-            <span class="visor-linha">PROGRAMA · LAVAGEM À MÃO</span>
-            <strong class="visor-modelo" id="visorModelo">New Balance 9060</strong>
-            <span class="visor-status" id="visorStatus"><i></i><em>ANTES</em></span>
-          </div>
-          <div class="botao-giro" aria-hidden="true"><i></i></div>
-        </div>
-        <div class="porta">
-          <div class="aro">
-            <div class="vedacao">
-              <div class="vidro">
-                <video id="videoAbertura" src="assets/video/abertura.mp4" poster="assets/video/abertura.jpg" autoplay muted loop playsinline preload="auto" aria-label="Tênis reais lavados pela GLL, do antes para o depois"></video>
-                <div class="espuma" aria-hidden="true"></div>
-                <div class="reflexo" aria-hidden="true"></div>
-                <span class="etiqueta" id="etiqueta">ANTES</span>
-              </div>
-            </div>
-          </div>
-          <div class="alca" aria-hidden="true"></div>
-        </div>
-        <div class="pes" aria-hidden="true"><i></i><i></i></div>
-      </div>
-      <p class="maquina-legenda">Tudo o que roda aí dentro é <b>par real</b> que passou pela GLL.</p>
     </div>
   </div>
+
+  <a class="rolar" href="#antes-depois" aria-label="Rolar para o antes e depois"><span>ROLE</span><i></i></a>
 
   <svg class="onda" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
     <path class="onda-a" d="M0,64 C180,110 360,10 540,52 C720,94 900,120 1080,70 C1260,20 1350,40 1440,60 L1440,120 L0,120 Z"/>
@@ -101,36 +79,22 @@
   </svg>
 </section>
 
-<!-- ============ ANTES E DEPOIS ============ -->
-<section class="secao clara" id="antes-depois">
+<!-- ============ VITRINE: ANTES E DEPOIS ============ -->
+<section class="secao clara vitrine-secao" id="antes-depois">
   <div class="largura">
-    <header class="cabeca revela">
-      <p class="rotulo">Antes e depois reais</p>
-      <h2>Arrasta e vê a <span class="destaque">diferença.</span></h2>
-      <p class="cabeca-sub">Fotos de pares que passaram pela GLL. Puxa a barrinha pro lado.</p>
+    <header class="cabeca cabeca-linha revela">
+      <div>
+        <p class="rotulo">Antes e depois reais</p>
+        <h2>Passa o mouse.<br><span class="destaque">Vê a lavagem.</span></h2>
+      </div>
+      <p class="dica"><span class="dica-mouse">Passa o mouse em cima do tênis</span><span class="dica-toque">Toca no tênis pra ver limpo</span></p>
     </header>
-
-    <div class="comparador-area revela">
-      <div class="comparador" id="comparador" style="--pos:50%">
-        <img class="comp-antes" id="compAntes" src="assets/img/pares/nb9060_antes.jpg" alt="Tênis antes da lavagem" width="960" height="1200">
-        <img class="comp-depois" id="compDepois" src="assets/img/pares/nb9060_depois.jpg" alt="Tênis depois da lavagem" width="960" height="1200">
-        <span class="comp-tag tag-antes">Antes</span>
-        <span class="comp-tag tag-depois">Depois</span>
-        <div class="comp-linha" aria-hidden="true"><span class="comp-puxador"><svg viewBox="0 0 24 24"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <input class="comp-range" id="compRange" type="range" min="0" max="100" value="50" aria-label="Comparar antes e depois">
-      </div>
-
-      <div class="comp-info">
-        <p class="rotulo pequeno">Par da vez</p>
-        <h3 id="compModelo">New Balance 9060</h3>
-        <p class="comp-feito-tit">O que foi feito</p>
-        <ul class="comp-feito" id="compFeito"></ul>
-        <div class="comp-lista" id="compLista" role="tablist" aria-label="Escolha o tênis"></div>
-        <a class="btn btn-zap" data-zap="orcamento" href="#" target="_blank" rel="noopener">
-          <svg class="ic" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-zap"/></svg>
-          Quero o meu assim
-        </a>
-      </div>
+    <div class="vitrine revela" id="vitrine" aria-label="Tênis lavados pela GLL, antes e depois"></div>
+    <div class="vitrine-cta revela">
+      <a class="btn btn-zap" data-zap="orcamento" href="#" target="_blank" rel="noopener">
+        <svg class="ic" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-zap"/></svg>
+        Quero o meu assim
+      </a>
     </div>
   </div>
 </section>

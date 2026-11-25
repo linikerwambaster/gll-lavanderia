@@ -7,7 +7,10 @@
     garimpo: "Olá! Vim pelo site da GLL e quero ajuda pra garimpar um tênis."
   };
   var reduz = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (/[?&]captura/.test(location.search)) document.documentElement.classList.add("captura");
+  if (/[?&]captura/.test(location.search)) {
+    document.documentElement.classList.add("captura");
+    document.querySelectorAll("img[loading=lazy]").forEach(function (i) { i.loading = "eager"; });
+  }
 
   // Links do WhatsApp com mensagem pronta
   document.querySelectorAll("[data-zap]").forEach(function (a) {
@@ -36,98 +39,69 @@
     }
   });
 
-  // Máquina: visor e etiqueta acompanham o vídeo (ANTES / DEPOIS + modelo)
-  var LINHA = [[0, "A", "New Balance 9060"], [1.55, "D", "New Balance 9060"], [3.45, "A", "Gucci Re-Web"], [4.75, "D", "Gucci Re-Web"],
-    [6.65, "A", "Nike Air Max 270"], [7.95, "D", "Nike Air Max 270"], [9.85, "A", "Nike Shox TL"], [11.15, "D", "Nike Shox TL"],
-    [13.05, "A", "Adidas Forum Mid"], [14.35, "D", "Adidas Forum Mid"], [16.25, "A", "On Running"], [17.55, "D", "On Running"], [19.45, "A", "New Balance 9060"]];
-  var video = document.getElementById("videoAbertura"), maq = document.getElementById("maquina");
-  var visorModelo = document.getElementById("visorModelo"), visorStatus = document.querySelector("#visorStatus em");
-  var etiqueta = document.getElementById("etiqueta"), porta = maq ? maq.querySelector(".porta") : null, ultimo = -1;
-  function sincroniza() {
-    if (video && !video.paused) {
-      var t = video.currentTime, i = 0;
-      for (var j = 0; j < LINHA.length; j++) if (t >= LINHA[j][0]) i = j;
-      if (i !== ultimo) {
-        ultimo = i;
-        var limpo = LINHA[i][1] === "D";
-        visorModelo.textContent = LINHA[i][2];
-        visorStatus.textContent = limpo ? "LIMPO" : "ANTES";
-        etiqueta.textContent = limpo ? "DEPOIS" : "ANTES";
-        maq.classList.toggle("limpo", limpo);
-        if (limpo && porta) { porta.classList.remove("flash"); void porta.offsetWidth; porta.classList.add("flash"); }
-      }
-    }
-    requestAnimationFrame(sincroniza);
-  }
+  // Vídeo da abertura: versão deitada (computador) ou em pé (celular)
+  var video = document.getElementById("videoAbertura");
   if (video) {
-    var tenta = video.play && video.play();
-    if (tenta && tenta.catch) tenta.catch(function () {});
-    requestAnimationFrame(sincroniza);
+    var emPe = window.matchMedia("(max-aspect-ratio: 4/5)").matches;
+    video.poster = video.getAttribute(emPe ? "data-cel-poster" : "data-pc-poster");
+    video.src = video.getAttribute(emPe ? "data-cel" : "data-pc");
+    if (reduz) { video.removeAttribute("autoplay"); video.pause(); }
+    else { var tenta = video.play && video.play(); if (tenta && tenta.catch) tenta.catch(function () {}); }
   }
 
-  // Comparador antes/depois
-  var PARES = [
-    { k: "nb9060", nome: "New Balance 9060", feito: ["Limpeza", "Higienização interna e externa", "Solados", "Palmilhas", "Cadarços", "Revitalização de camurça", "Neutralização de odores"] },
-    { k: "gucci", nome: "Gucci Re-Web", feito: ["Limpeza premium", "Higienização interna e externa", "Solados", "Palmilhas", "Cadarços", "Hidratação do couro", "Revitalização da camurça"] },
-    { k: "am270", nome: "Nike Air Max 270", feito: ["Pacote Eco Clean", "Higienização interna e externa", "Cadarços", "Palmilhas", "Solado", "Colagem"] },
-    { k: "shox", nome: "Nike Shox TL", feito: ["Limpeza", "Higienização interna e externa", "Cadarços", "Solados", "Palmilhas"] },
-    { k: "forum", nome: "Adidas Forum Mid", feito: ["Limpeza", "Higienização interna e externa", "Cadarços", "Palmilhas", "Solado", "Clareamento de entressola"] },
-    { k: "aj1mid", nome: "Air Jordan 1 Mid", feito: ["Limpeza", "Higienização interna e externa", "Cadarços", "Palmilhas", "Solados", "Colagem"] },
-    { k: "on", nome: "On Running", feito: ["Limpeza", "Higienização interna e externa", "Cadarços", "Palmilhas", "Solados", "Neutralização de odores"] },
-    { k: "aj1low", nome: "Air Jordan 1 Low", feito: ["Limpeza", "Higienização interna e externa", "Solados", "Palmilhas", "Cadarços", "Revitalização de camurça"] },
-    { k: "lacoste", nome: "Lacoste", feito: ["Limpeza", "Higienização interna e externa", "Solados", "Palmilhas", "Cadarços", "Revitalização da camurça"] },
-    { k: "courtvision", nome: "Nike Court Vision Alta", feito: ["Limpeza", "Higienização interna e externa", "Cadarços", "Solados", "Palmilhas"] }
+  // Vitrine: cartazes com o tênis sujo que vira limpo (mouse em cima / toque)
+  var CARTAZES = [
+    { k: "nb9060", marca: "New Balance", titulo: ["New", "Balance", "9060"], servico: "Revitalização de camurça", fundo: "#D9DDE7", tinta: "#1B2131", acento: "#5B6680" },
+    { k: "gucci", marca: "Gucci", titulo: ["Gucci", "Re-Web"], servico: "Limpeza premium", fundo: "#EFE3CC", tinta: "#1D2A4D", acento: "#B32638" },
+    { k: "forum", marca: "Adidas", titulo: ["Forum", "Mid"], servico: "Clareamento da entressola", fundo: "#2342FF", tinta: "#FFFFFF", acento: "#9CE8FF" },
+    { k: "am270", marca: "Nike", titulo: ["Air Max", "270"], servico: "Eco Clean + colagem", fundo: "#FF4F9A", tinta: "#FFFFFF", acento: "#2A0A1A" },
+    { k: "aj1low", marca: "Jordan", titulo: ["Jordan 1", "Low"], servico: "Revitalização de camurça", fundo: "#CCD9C4", tinta: "#1F2B1C", acento: "#5E7A55" },
+    { k: "lacoste", marca: "Lacoste", titulo: ["Lacoste"], servico: "Revitalização da camurça", fundo: "#12553C", tinta: "#F3F1EA", acento: "#9FE3B9" },
+    { k: "shox", marca: "Nike", titulo: ["Shox", "TL"], servico: "Higienização completa", fundo: "#0E1424", tinta: "#E8EEF8", acento: "#47D7FF" }
   ];
-  var comp = document.getElementById("comparador");
-  if (comp) {
-    var range = document.getElementById("compRange"), antes = document.getElementById("compAntes"), depois = document.getElementById("compDepois");
-    var titulo = document.getElementById("compModelo"), feito = document.getElementById("compFeito"), lista = document.getElementById("compLista");
-    var poe = function (v) { comp.style.setProperty("--pos", v + "%"); range.value = v; };
-    range.addEventListener("input", function () { poe(range.value); });
-    var arrasta = function (e) {
-      var r = comp.getBoundingClientRect(), x = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
-      poe(Math.max(0, Math.min(100, (x / r.width) * 100)).toFixed(1));
+  var vitrine = document.getElementById("vitrine");
+  if (vitrine) {
+    var r2 = semente(7), bolhasHTML = function () {
+      var h = "";
+      for (var i = 0; i < 9; i++) {
+        var t = 10 + r2() * 26;
+        h += '<b style="width:' + t.toFixed(0) + "px;height:" + t.toFixed(0) + "px;left:" + (20 + r2() * 60).toFixed(0) + "%;top:" + (35 + r2() * 35).toFixed(0) + "%;animation-delay:" + (r2() * 0.35).toFixed(2) + 's"></b>';
+      }
+      return h;
     };
-    // Arrastar: horizontal move a barra; vertical continua rolando a página (touch-action: pan-y)
-    var segurando = false;
-    comp.addEventListener("pointerdown", function (e) { segurando = true; arrasta(e); });
-    comp.addEventListener("pointermove", function (e) { if (segurando) arrasta(e); });
-    ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) { comp.addEventListener(ev, function () { segurando = false; }); });
+    vitrine.innerHTML = CARTAZES.map(function (c) {
+      return '<article class="cartaz" tabindex="0" role="button" aria-pressed="false" aria-label="' + c.marca + " " + c.titulo.join(" ") + ': ver antes e depois" style="--fundo:' + c.fundo + ";--tinta:" + c.tinta + ";--acento:" + c.acento + '">' +
+        '<div class="cartaz-topo"><span>' + c.marca + '</span><span class="gll">GLL</span></div>' +
+        '<h3 class="cartaz-titulo">' + c.titulo.map(function (t) { return "<span>" + t + "</span>"; }).join("") + "</h3>" +
+        '<img class="c-antes" src="assets/img/vitrine/' + c.k + '_antes.webp" alt="' + c.marca + " " + c.titulo.join(" ") + ' antes da lavagem" loading="lazy" width="1000" height="1000">' +
+        '<img class="c-depois" src="assets/img/vitrine/' + c.k + '_depois.webp" alt="' + c.marca + " " + c.titulo.join(" ") + ' depois da lavagem na GLL" loading="lazy" width="1000" height="1000">' +
+        '<div class="espuma-b" aria-hidden="true">' + bolhasHTML() + "</div>" +
+        '<div class="cartaz-base"><span class="estado"><i></i><em class="e1">ANTES</em><em class="e2">DEPOIS</em></span><span class="servico">' + c.servico + "</span></div>" +
+        "</article>";
+    }).join("") +
+      '<a class="cartaz cartaz-convite" data-zap="orcamento" href="#" target="_blank" rel="noopener" style="--fundo:#04122B;--tinta:#FFFFFF;--acento:#FFD23F">' +
+      '<div class="cartaz-topo"><span>Seu par</span><span class="gll">GLL</span></div>' +
+      '<h3 class="cartaz-titulo"><span>Seu tênis</span><span>é o próximo</span></h3>' +
+      '<div class="convite-base"><span class="btn btn-zap"><svg class="ic" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-zap"/></svg>Manda a foto no WhatsApp</span></div></a>';
+    vitrine.querySelectorAll(".cartaz-convite").forEach(function (a) { a.href = "https://wa.me/" + ZAP + "?text=" + encodeURIComponent(MSG.orcamento); });
 
-    var escolhe = function (i, botao) {
-      var p = PARES[i];
-      antes.src = "assets/img/pares/" + p.k + "_antes.jpg"; antes.alt = p.nome + " antes da lavagem";
-      depois.src = "assets/img/pares/" + p.k + "_depois.jpg"; depois.alt = p.nome + " depois da lavagem";
-      titulo.textContent = p.nome;
-      feito.innerHTML = p.feito.map(function (f) { return "<li>" + f + "</li>"; }).join("");
-      lista.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-selected", b === botao ? "true" : "false"); });
-      if (!reduz) varre();
-    };
-    PARES.forEach(function (p, i) {
-      var b = document.createElement("button");
-      b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-label", p.nome);
-      b.innerHTML = '<img src="assets/img/pares/' + p.k + '_depois.jpg" alt="" loading="lazy" width="960" height="1200">';
-      b.addEventListener("click", function () { escolhe(i, b); });
-      lista.appendChild(b);
-      if (i === 0) { b.setAttribute("aria-selected", "true"); feito.innerHTML = p.feito.map(function (f) { return "<li>" + f + "</li>"; }).join(""); }
+    // toque (celular) e teclado alternam o limpo; no computador o mouse já faz isso pelo CSS
+    vitrine.querySelectorAll("article.cartaz").forEach(function (c) {
+      var troca = function () { var on = c.classList.toggle("limpo"); c.setAttribute("aria-pressed", on ? "true" : "false"); };
+      c.addEventListener("click", function () { if (window.matchMedia("(hover: none)").matches) troca(); });
+      c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); troca(); } });
     });
-    // Varredura inicial: mostra o antes e "lava" até a metade
-    var varrendo = false;
-    function varre() {
-      if (varrendo) return; varrendo = true;
-      var ini = performance.now(), de = 100, ate = 50, dur = 1400;
-      (function passo(t) {
-        var p = Math.min(1, (t - ini) / dur), e = 1 - Math.pow(1 - p, 3);
-        poe((de + (ate - de) * e).toFixed(1));
-        if (p < 1) requestAnimationFrame(passo); else varrendo = false;
-      })(ini);
+    // no celular, cada cartaz "lava sozinho" quando aparece na tela
+    if ("IntersectionObserver" in window && window.matchMedia("(hover: none)").matches && !reduz) {
+      var obs = new IntersectionObserver(function (ents) {
+        ents.forEach(function (en) {
+          if (en.isIntersecting) { setTimeout(function () { en.target.classList.add("limpo"); en.target.setAttribute("aria-pressed", "true"); }, 700); obs.unobserve(en.target); }
+        });
+      }, { threshold: 0.7 });
+      vitrine.querySelectorAll("article.cartaz").forEach(function (c) { obs.observe(c); });
     }
-    if ("IntersectionObserver" in window && !reduz) {
-      var viu = false;
-      new IntersectionObserver(function (ents, ob) {
-        ents.forEach(function (en) { if (en.isIntersecting && !viu) { viu = true; varre(); ob.disconnect(); } });
-      }, { threshold: 0.45 }).observe(comp);
-    }
+    // prévia: ?captura&limpo mostra metade dos cartazes já lavados
+    if (/[?&]limpo/.test(location.search)) vitrine.querySelectorAll("article.cartaz").forEach(function (c, i) { if (i % 2 === 1) c.classList.add("limpo"); });
   }
 
   // Mural do depois: duas faixas em sentidos opostos
