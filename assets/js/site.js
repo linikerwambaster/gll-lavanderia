@@ -71,7 +71,7 @@
     };
     vitrine.innerHTML = CARTAZES.map(function (c) {
       return '<article class="cartaz" tabindex="0" role="button" aria-pressed="false" aria-label="' + c.marca + " " + c.titulo.join(" ") + ': ver antes e depois" style="--fundo:' + c.fundo + ";--tinta:" + c.tinta + ";--acento:" + c.acento + '">' +
-        '<div class="cartaz-topo"><span>' + c.marca + '</span><span class="gll">GLL</span></div>' +
+        '<div class="cartaz-topo"><span>' + c.marca + '</span><svg class="gll" viewBox="0 0 988 919" aria-hidden="true"><use href="#i-gll"/></svg></div>' +
         '<h3 class="cartaz-titulo">' + c.titulo.map(function (t) { return "<span>" + t + "</span>"; }).join("") + "</h3>" +
         '<img class="c-antes" src="assets/img/vitrine/' + c.k + '_antes.webp" alt="' + c.marca + " " + c.titulo.join(" ") + ' antes da lavagem" loading="lazy" width="1000" height="1000">' +
         '<img class="c-depois" src="assets/img/vitrine/' + c.k + '_depois.webp" alt="' + c.marca + " " + c.titulo.join(" ") + ' depois da lavagem na GLL" loading="lazy" width="1000" height="1000">' +
@@ -80,7 +80,7 @@
         "</article>";
     }).join("") +
       '<a class="cartaz cartaz-convite" data-zap="orcamento" href="#" target="_blank" rel="noopener" style="--fundo:#04122B;--tinta:#FFFFFF;--acento:#FFD23F">' +
-      '<div class="cartaz-topo"><span>Seu par</span><span class="gll">GLL</span></div>' +
+      '<div class="cartaz-topo"><span>Seu par</span><svg class="gll" viewBox="0 0 988 919" aria-hidden="true"><use href="#i-gll"/></svg></div>' +
       '<h3 class="cartaz-titulo"><span>Seu tênis</span><span>é o próximo</span></h3>' +
       '<div class="convite-base"><span class="btn btn-zap"><svg class="ic" viewBox="0 0 32 32" aria-hidden="true"><use href="#i-zap"/></svg>Manda a foto no WhatsApp</span></div></a>';
     vitrine.querySelectorAll(".cartaz-convite").forEach(function (a) { a.href = "https://wa.me/" + ZAP + "?text=" + encodeURIComponent(MSG.orcamento); });
